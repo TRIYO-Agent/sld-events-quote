@@ -1,18 +1,23 @@
 # SLD Events planning intake and quote estimate
 
-A single-page intake form for [SLD Events](https://eventsbystacey.com) (Events by Stacey in Baltimore, Maryland). Clients describe the event and see a live, itemized planning-fee estimate, then send the request to Stacey by email or print a PDF.
+A single-page intake form for [SLD Events](https://eventsbystacey.com), serving the Baltimore and Washington, DC area. Clients choose an occasion (wedding, Bar or Bat Mitzvah, or celebration) and a planning package, see a live estimate, then email Stacey or print a PDF.
 
-## Important: sample rates
+## Official starting prices
 
-The services page on eventsbystacey.com does not list prices. It says package prices are placeholders. The numbers in `app.js` (`const RATES` at the top) are sample Mid-Atlantic planning-fee ranges for discussion only. They are not published SLD Events rates.
+These come from the SLD Events pricing sheet:
 
-When official fees are ready, edit `RATES` in `app.js` only. The on-page disclaimer should be updated at the same time if the figures become hers.
+- Day-of Coordination starts at $1,200
+- Full-Service Planning starts at $4,200
 
-The estimate covers planning and coordination time. It does not include venue, catering, florals, rentals, or other vendor costs.
+Final pricing depends on guest count, venue, and the scope of the celebration, and is confirmed in a written quote after a free consultation. A 50% deposit reserves the date. The balance is due before the event. Vendor and venue costs are paid by the client directly and are not included.
+
+## Sample adjustments
+
+Guest count, short-timeline, and travel adjustments in `app.js` (`RATES.guestAdjust`, `RATES.rush`, `RATES.travel`) are sample estimate ranges only. They are not published fees. Edit that SAMPLE section when official adjustment amounts are ready. Leave the package `starting` values alone unless the published starting prices change.
 
 ## Contact
 
-Requests open a prefilled email to Stacey@eventsbystacey.com, the address published on the site. No phone number is listed on the public site.
+Requests open a prefilled email to Stacey@eventsbystacey.com, the address published on eventsbystacey.com. No phone number is listed on the public site.
 
 ## Branding
 

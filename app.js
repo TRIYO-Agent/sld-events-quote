@@ -1,44 +1,40 @@
 /**
  * SLD Events intake form and quote estimate.
  *
- * SAMPLE RATES: eventsbystacey.com does not list package prices. The services
- * page says "Prices below are placeholders. Replace each [price] before
- * publishing numbers." The figures in RATES are reasonable Mid-Atlantic
- * sample planning-fee ranges for discussion only. They are not published
- * SLD Events rates and must not be described as Stacey's fees. When she
- * has official prices, edit this object only. Amounts are USD.
+ * REAL PRICES come from the SLD Events pricing sheet (November 2026):
+ *   Day-of Coordination starts at $1,200
+ *   Full-Service Planning starts at $4,200
+ * Those starting prices are official. Final pricing depends on guest count,
+ * venue, and the scope of the celebration, and is confirmed in a written
+ * quote after a free consultation.
  *
- * Planning fees cover Stacey's planning and coordination time. They do not
- * include venue, catering, florals, rentals, entertainment, or other vendors.
+ * SAMPLE ADJUSTMENTS below (guest count, short timeline, travel outside the
+ * service area) are not published on the sheet. They are reasonable estimate
+ * ranges so the live quote can show how a starting price might change.
+ * They are not official SLD Events fees. When Stacey has official adjustment
+ * amounts, edit only the SAMPLE section. Amounts are USD.
+ *
+ * Planning fees do not include venue, catering, florals, rentals, or other
+ * vendor costs. Those are paid by the client directly to each vendor.
  */
 const RATES = {
   contactEmail: "Stacey@eventsbystacey.com",
 
-  // Base planning packages: [low, high]. Guest count up to 100 is included.
+  // REAL starting prices from the SLD Events pricing sheet.
   packages: {
-    mitzvah: {
-      "day-of": [1800, 2800],
-      partial: [3500, 5500],
-      full: [6500, 11000],
+    "day-of": {
+      name: "Day-of Coordination",
+      starting: 1200,
     },
-    wedding: {
-      "day-of": [2000, 3200],
-      partial: [4000, 7000],
-      full: [8000, 14000],
-    },
-    corporate: {
-      "day-of": [1500, 2500],
-      partial: [3000, 5000],
-      full: [5500, 9500],
-    },
-    other: {
-      "day-of": [1800, 2800],
-      partial: [3500, 5500],
-      full: [6500, 11000],
+    full: {
+      name: "Full-Service Planning",
+      starting: 4200,
     },
   },
 
-  // Extra planning time for larger rooms, as a percent of the package.
+  // ----- SAMPLE ADJUSTMENTS (not published on the pricing sheet) -----
+
+  // Added when guest count is above 100, as a percent of the starting price.
   guestAdjust: [
     { max: 100, low: 0, high: 0 },
     { max: 200, low: 0.15, high: 0.2 },
@@ -46,47 +42,29 @@ const RATES = {
     { max: Infinity, low: 0.5, high: 0.65 },
   ],
 
-  // Optional coordination and design-direction fees (not vendor invoices).
-  addons: {
-    decor: { label: "Theme and décor direction", low: 400, high: 800 },
-    florals: { label: "Florals coordination", low: 300, high: 600 },
-    rentals: { label: "Rentals coordination", low: 250, high: 500 },
-    catering: { label: "Catering coordination", low: 300, high: 700 },
-    paper: { label: "Invitations and paper direction", low: 250, high: 500 },
-    lighting: { label: "Lighting and layout direction", low: 300, high: 600 },
-    "teen-program": { label: "Kids and teen program coordination", low: 350, high: 700 },
-    av: { label: "Audiovisual and registration coordination", low: 350, high: 700 },
-  },
-
-  // Added when the client needs help finding a venue.
-  venueSearch: { label: "Venue search", low: 400, high: 800 },
-
   // Added when the event date is within this many days.
   rush: { withinDays: 56, label: "Short-timeline planning", low: 0.15, high: 0.25 },
+
+  // Added when the venue is outside the Baltimore and Washington, DC area.
+  travel: { label: "Travel outside the service area", low: 400, high: 800 },
 };
 
-const EVENT_LABELS = {
-  "bar-mitzvah": "Bar Mitzvah",
-  "bat-mitzvah": "Bat Mitzvah",
-  "bnai-mitzvah": "B'nai Mitzvah",
+const OCCASION_LABELS = {
   wedding: "Wedding",
-  corporate: "Corporate event",
-  other: "Other",
-};
-
-const PLAN_LABELS = {
-  "day-of": "Day-of coordination",
-  partial: "Partial planning",
-  full: "Full planning",
+  mitzvah: "Bar or Bat Mitzvah",
+  celebration: "Celebration",
 };
 
 const form = document.getElementById("form");
+const estimateKicker = document.getElementById("estimateKicker");
 const estimateTotal = document.getElementById("estimateTotal");
 const estimateLines = document.getElementById("estimateLines");
 const estimateNote = document.getElementById("estimateNote");
 const formError = document.getElementById("formError");
 const mobileBar = document.getElementById("mobileBar");
 const mobileTotal = document.getElementById("mobileTotal");
+const venueNote = document.getElementById("venueNote");
+const quizResult = document.getElementById("quizResult");
 
 function money(n) {
   return "$" + Math.round(n).toLocaleString("en-US");
@@ -96,28 +74,22 @@ function rangeText(low, high) {
   return low === high ? money(low) : money(low) + " to " + money(high);
 }
 
-function eventFamily(type) {
-  if (type === "bar-mitzvah" || type === "bat-mitzvah" || type === "bnai-mitzvah") return "mitzvah";
-  if (type === "wedding" || type === "corporate" || type === "other") return type;
-  return "";
-}
-
 function readForm() {
   const data = new FormData(form);
-  const addons = data.getAll("addons");
   return {
     firstName: (data.get("firstName") || "").trim(),
     lastName: (data.get("lastName") || "").trim(),
     email: (data.get("email") || "").trim(),
     phone: (data.get("phone") || "").trim(),
-    eventType: data.get("eventType") || "",
-    eventTypeOther: (data.get("eventTypeOther") || "").trim(),
+    occasion: data.get("occasion") || "",
+    mitzvahType: (data.get("mitzvahType") || "").trim(),
+    celebrationType: (data.get("celebrationType") || "").trim(),
     eventDate: data.get("eventDate") || "",
     guestCount: data.get("guestCount") ? Number(data.get("guestCount")) : null,
     venueStatus: data.get("venueStatus") || "have",
     venue: (data.get("venue") || "").trim(),
+    outsideArea: data.get("outsideArea") === "yes",
     planningLevel: data.get("planningLevel") || "",
-    addons,
     budget: data.get("budget") || "",
     notes: (data.get("notes") || "").trim(),
   };
@@ -131,79 +103,100 @@ function daysUntil(dateStr) {
   return Math.round((event - today) / 86400000);
 }
 
+function occasionLabel(input) {
+  if (input.occasion === "mitzvah" && input.mitzvahType) return input.mitzvahType;
+  if (input.occasion === "celebration" && input.celebrationType) {
+    return "Celebration (" + input.celebrationType + ")";
+  }
+  return OCCASION_LABELS[input.occasion] || input.occasion || "Not specified";
+}
+
 function buildEstimate(input) {
-  const lines = [];
-  const family = eventFamily(input.eventType);
-  if (!family || !input.planningLevel) {
-    return { ready: false, lines, low: 0, high: 0, warnings: [] };
+  const pack = RATES.packages[input.planningLevel];
+  if (!pack) {
+    return { ready: false, lines: [], starting: 0, adjLow: 0, adjHigh: 0, low: 0, high: 0, days: null };
   }
 
-  const pack = RATES.packages[family][input.planningLevel];
-  let low = pack[0];
-  let high = pack[1];
+  const lines = [];
+  const starting = pack.starting;
   lines.push({
-    label: PLAN_LABELS[input.planningLevel],
-    low,
-    high,
-    note: EVENT_LABELS[input.eventType] + " planning fee, sample range.",
+    label: pack.name + ", starting at",
+    low: starting,
+    high: starting,
+    official: true,
+    note: "Published starting price from the SLD Events pricing sheet.",
   });
+
+  let adjLow = 0;
+  let adjHigh = 0;
 
   if (input.guestCount && input.guestCount > 0) {
     const band = RATES.guestAdjust.find((g) => input.guestCount <= g.max);
     if (band && (band.low || band.high)) {
-      const gLow = Math.round(pack[0] * band.low);
-      const gHigh = Math.round(pack[1] * band.high);
-      low += gLow;
-      high += gHigh;
+      const gLow = Math.round(starting * band.low);
+      const gHigh = Math.round(starting * band.high);
+      adjLow += gLow;
+      adjHigh += gHigh;
       lines.push({
         label: "Larger guest count (" + input.guestCount + ")",
         low: gLow,
         high: gHigh,
-        note: "Sample adjustment for a room over 100 guests.",
+        official: false,
+        note: "Sample estimate for a celebration over 100 guests. Not a published fee.",
       });
     }
   }
 
-  if (input.venueStatus === "need") {
-    low += RATES.venueSearch.low;
-    high += RATES.venueSearch.high;
-    lines.push({
-      label: RATES.venueSearch.label,
-      low: RATES.venueSearch.low,
-      high: RATES.venueSearch.high,
-      note: input.planningLevel === "day-of"
-        ? "Day-of coordination usually assumes a venue is already booked. This sample fee covers a venue search if you still need one."
-        : "",
-    });
-  }
-
-  for (const key of input.addons) {
-    const addon = RATES.addons[key];
-    if (!addon) continue;
-    low += addon.low;
-    high += addon.high;
-    lines.push({ label: addon.label, low: addon.low, high: addon.high });
-  }
-
   const days = daysUntil(input.eventDate);
   if (days !== null && days >= 0 && days <= RATES.rush.withinDays) {
-    const rLow = Math.round(pack[0] * RATES.rush.low);
-    const rHigh = Math.round(pack[1] * RATES.rush.high);
-    low += rLow;
-    high += rHigh;
+    const rLow = Math.round(starting * RATES.rush.low);
+    const rHigh = Math.round(starting * RATES.rush.high);
+    adjLow += rLow;
+    adjHigh += rHigh;
     lines.push({
       label: RATES.rush.label,
       low: rLow,
       high: rHigh,
-      note: "Sample addition when the date is within eight weeks.",
+      official: false,
+      note: "Sample estimate when the date is within eight weeks. Not a published fee.",
     });
   }
 
-  const warnings = [];
-  if (days !== null && days < 0) {
-    warnings.push("The date looks like it has already passed. Please check it before you send.");
+  if (input.outsideArea) {
+    adjLow += RATES.travel.low;
+    adjHigh += RATES.travel.high;
+    lines.push({
+      label: RATES.travel.label,
+      low: RATES.travel.low,
+      high: RATES.travel.high,
+      official: false,
+      note: "Sample estimate for a venue outside the Baltimore and Washington, DC area. Not a published fee.",
+    });
   }
-  return { ready: true, lines, low, high, warnings, days };
+
+  return {
+    ready: true,
+    pack,
+    lines,
+    starting,
+    adjLow,
+    adjHigh,
+    low: starting + adjLow,
+    high: starting + adjHigh,
+    days,
+  };
+}
+
+function disclaimerText(estimate) {
+  const base =
+    "Final pricing depends on guest count, venue, and the scope of the celebration, and is confirmed in a written quote after a free consultation. A 50% deposit reserves the date. The balance is due before the event. Vendor and venue costs are paid directly by you and are not included.";
+  if (!estimate.ready) {
+    return "Choose a package to see the starting price. " + base;
+  }
+  if (estimate.adjLow || estimate.adjHigh) {
+    return "The starting price is official. Any adjustments shown below it are sample estimates only, not published SLD Events fees. " + base;
+  }
+  return "This starting price is official. " + base;
 }
 
 function renderEstimate() {
@@ -211,33 +204,33 @@ function renderEstimate() {
   const estimate = buildEstimate(input);
   estimateLines.innerHTML = "";
 
-  const otherLabel = form.querySelector(".other-label");
-  otherLabel.hidden = input.eventType !== "other";
+  form.querySelector(".mitzvah-detail").hidden = input.occasion !== "mitzvah";
+  form.querySelector(".celebration-detail").hidden = input.occasion !== "celebration";
 
-  form.querySelectorAll(".check[data-for]").forEach((el) => {
-    const show =
-      (el.dataset.for === "mitzvah" && eventFamily(input.eventType) === "mitzvah") ||
-      (el.dataset.for === "corporate" && input.eventType === "corporate") ||
-      !input.eventType;
-    el.hidden = !show;
-    if (!show) el.querySelector("input").checked = false;
-  });
+  venueNote.hidden = !(input.venueStatus === "need" && input.planningLevel === "day-of");
 
   if (!estimate.ready) {
-    estimateTotal.textContent = "Choose a planning level";
+    estimateKicker.textContent = "Choose a planning package";
+    estimateTotal.textContent = "";
+    estimateNote.textContent = disclaimerText(estimate);
     mobileTotal.textContent = "pending";
     mobileBar.hidden = true;
     return estimate;
   }
 
-  estimateTotal.textContent = rangeText(estimate.low, estimate.high);
-  mobileTotal.textContent = rangeText(estimate.low, estimate.high);
+  const hasAdj = estimate.adjLow || estimate.adjHigh;
+  estimateKicker.textContent = estimate.pack.name + ", starting at " + money(estimate.starting);
+  estimateTotal.textContent = hasAdj
+    ? "Estimated range " + rangeText(estimate.low, estimate.high)
+    : "Starting at " + money(estimate.starting);
+  estimateNote.textContent = disclaimerText(estimate);
+  mobileTotal.textContent = hasAdj ? rangeText(estimate.low, estimate.high) : "Starting at " + money(estimate.starting);
   mobileBar.hidden = false;
 
   for (const line of estimate.lines) {
     const li = document.createElement("li");
     const name = document.createElement("span");
-    name.textContent = line.label;
+    name.textContent = line.label + (line.official ? "" : " (estimate)");
     const amt = document.createElement("span");
     amt.className = "amt";
     amt.textContent = rangeText(line.low, line.high);
@@ -251,26 +244,22 @@ function renderEstimate() {
     estimateLines.append(li);
   }
 
-  const total = document.createElement("li");
-  const tName = document.createElement("span");
-  tName.textContent = "Estimated planning fee";
-  const tAmt = document.createElement("span");
-  tAmt.className = "amt";
-  tAmt.textContent = rangeText(estimate.low, estimate.high);
-  total.append(tName, tAmt);
-  estimateLines.append(total);
+  if (hasAdj) {
+    const total = document.createElement("li");
+    const tName = document.createElement("span");
+    tName.textContent = "Starting price plus estimated adjustments";
+    const tAmt = document.createElement("span");
+    tAmt.className = "amt";
+    tAmt.textContent = rangeText(estimate.low, estimate.high);
+    total.append(tName, tAmt);
+    estimateLines.append(total);
+  }
+
   return estimate;
 }
 
 function validEmail(value) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-}
-
-function eventTypeLabel(input) {
-  if (input.eventType === "other" && input.eventTypeOther) {
-    return "Other (" + input.eventTypeOther + ")";
-  }
-  return EVENT_LABELS[input.eventType] || input.eventType || "Not specified";
 }
 
 function emailBody(input, estimate) {
@@ -282,24 +271,30 @@ function emailBody(input, estimate) {
     "Name: " + input.firstName + " " + input.lastName,
     "Email: " + input.email,
     "Phone: " + (input.phone || "Not provided"),
-    "Event type: " + eventTypeLabel(input),
+    "Occasion: " + occasionLabel(input),
     "Event date: " + (input.eventDate || "Not set yet"),
     "Guest count: " + (input.guestCount || "Not set yet"),
     "Venue: " + (input.venueStatus === "need" ? "Needs help finding a venue" : "Has a venue or location") + (input.venue ? " (" + input.venue + ")" : ""),
-    "Planning level: " + (PLAN_LABELS[input.planningLevel] || "Not chosen"),
-    "Add-ons: " + (input.addons.length ? input.addons.map((k) => (RATES.addons[k] || {}).label || k).join(", ") : "None selected"),
+    "Outside the Baltimore and Washington, DC area: " + (input.outsideArea ? "Yes" : "No"),
+    "Package: " + (estimate.ready ? estimate.pack.name : "Not chosen"),
     "Overall event budget range: " + (input.budget || "Not sure yet"),
     "",
   ];
 
   if (estimate.ready) {
-    lines.push("Sample estimated planning fee: " + rangeText(estimate.low, estimate.high));
-    lines.push("Itemized sample range:");
-    for (const line of estimate.lines) {
-      lines.push("- " + line.label + ": " + rangeText(line.low, line.high));
+    lines.push("Starting price (from the pricing sheet): " + money(estimate.starting));
+    if (estimate.adjLow || estimate.adjHigh) {
+      lines.push("Estimated adjustments (sample ranges, not published fees): " + rangeText(estimate.adjLow, estimate.adjHigh));
+      for (const line of estimate.lines) {
+        if (line.official) continue;
+        lines.push("- " + line.label + ": " + rangeText(line.low, line.high));
+      }
+      lines.push("Estimated planning range: " + rangeText(estimate.low, estimate.high));
+    } else {
+      lines.push("No sample adjustments applied. Estimated planning fee starts at " + money(estimate.starting) + ".");
     }
     lines.push("");
-    lines.push("Please note: this is a sample estimate only. Package prices are not listed on eventsbystacey.com yet, and these numbers are not published SLD Events rates. Final pricing is confirmed by you.");
+    lines.push("Final pricing depends on guest count, venue, and the scope of the celebration, and is confirmed in a written quote after a free consultation. A 50% deposit reserves the date. The balance is due before the event. Vendor and venue costs are paid directly by the client and are not included.");
     lines.push("");
   }
 
@@ -318,6 +313,25 @@ function showError(msg) {
   formError.textContent = msg || "";
 }
 
+document.querySelectorAll(".quiz").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const tier = btn.dataset.tier;
+    const radio = form.querySelector('input[name="planningLevel"][value="' + tier + '"]');
+    if (radio) {
+      radio.checked = true;
+      radio.focus();
+    }
+    document.querySelectorAll(".quiz").forEach((b) => b.classList.toggle("is-picked", b === btn));
+    quizResult.hidden = false;
+    quizResult.textContent =
+      tier === "day-of"
+        ? "Day-of Coordination looks like the right fit. It starts at $1,200 and covers execution on the day itself."
+        : "Full-Service Planning looks like the right fit. It starts at $4,200 and covers the work from budget and venue to design and the day itself.";
+    renderEstimate();
+    document.getElementById("tiers").scrollIntoView({ behavior: "smooth", block: "nearest" });
+  });
+});
+
 form.addEventListener("input", renderEstimate);
 form.addEventListener("change", renderEstimate);
 
@@ -332,17 +346,17 @@ form.addEventListener("submit", (event) => {
     showError("Please add a valid email address.");
     return;
   }
-  if (!input.eventType) {
-    showError("Please choose an event type.");
+  if (!input.occasion) {
+    showError("Please choose an occasion.");
     return;
   }
   if (!input.planningLevel) {
-    showError("Please choose a planning level so Stacey can see the estimate you reviewed.");
+    showError("Please choose Day-of Coordination or Full-Service Planning.");
     return;
   }
   showError("");
   const estimate = buildEstimate(input);
-  const subject = "Event inquiry: " + eventTypeLabel(input) + (input.eventDate ? " on " + input.eventDate : "");
+  const subject = "Event inquiry: " + occasionLabel(input) + (input.eventDate ? " on " + input.eventDate : "");
   const href =
     "mailto:" + encodeURIComponent(RATES.contactEmail) +
     "?subject=" + encodeURIComponent(subject) +

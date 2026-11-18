@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Plan your event | SLD Events</title>
-  <meta name="description" content="Share the date, the guest count, and how the day should feel. SLD Events will send back an estimated planning range, then Stacey confirms the fee.">
+  <meta name="description" content="Plan a wedding, Bar or Bat Mitzvah, or celebration with SLD Events in the Baltimore and Washington, DC area. Start with a free consultation and see a live estimate.">
   <link rel="canonical" href="https://sld-events-quote.onrender.com/">
   <link rel="icon" href="assets/brand/favicon.svg" type="image/svg+xml">
   <link rel="icon" href="assets/brand/favicon-32.png" sizes="32x32" type="image/png">
@@ -35,9 +35,9 @@
   <main>
     <section class="hero">
       <div class="wrap">
-        <p class="eyebrow">SLD Events · Baltimore, Maryland</p>
+        <p class="eyebrow">SLD Events · Weddings, Bar and Bat Mitzvahs, Celebrations</p>
         <h1>Tell Stacey about the date.</h1>
-        <p class="lede">Share the kind of event, a rough guest count, and what you hope the day feels like. You will see a live planning estimate as you go. Stacey replies within one business day, and she confirms the final fee.</p>
+        <p class="lede">Two ways to work together, priced for the Baltimore and Washington, DC area. Every package ends the same way: you enjoy the day with your family while we run the details behind the scenes. Start with a free consultation. Stacey confirms the fee in a written quote before you sign anything.</p>
       </div>
     </section>
 
@@ -66,17 +66,22 @@
         </fieldset>
 
         <fieldset class="block">
-          <legend>What are you planning?</legend>
-          <div class="choices" role="radiogroup" aria-label="Event type">
-            <label class="choice"><input type="radio" name="eventType" value="bar-mitzvah" required> Bar Mitzvah</label>
-            <label class="choice"><input type="radio" name="eventType" value="bat-mitzvah"> Bat Mitzvah</label>
-            <label class="choice"><input type="radio" name="eventType" value="bnai-mitzvah"> B'nai Mitzvah</label>
-            <label class="choice"><input type="radio" name="eventType" value="wedding"> Wedding</label>
-            <label class="choice"><input type="radio" name="eventType" value="corporate"> Corporate event</label>
-            <label class="choice"><input type="radio" name="eventType" value="other"> Other</label>
+          <legend>What kind of occasion is it?</legend>
+          <div class="choices" role="radiogroup" aria-label="Occasion">
+            <label class="choice"><input type="radio" name="occasion" value="wedding" required> Wedding</label>
+            <label class="choice"><input type="radio" name="occasion" value="mitzvah"> Bar or Bat Mitzvah</label>
+            <label class="choice"><input type="radio" name="occasion" value="celebration"> Celebration</label>
           </div>
-          <label class="other-label" hidden>If other, tell us a little more
-            <input type="text" name="eventTypeOther" maxlength="120" placeholder="For example, a rehearsal dinner or anniversary">
+          <label class="mitzvah-detail" hidden>If you would like to be specific
+            <select name="mitzvahType">
+              <option value="">Bar or Bat Mitzvah</option>
+              <option value="Bar Mitzvah">Bar Mitzvah</option>
+              <option value="Bat Mitzvah">Bat Mitzvah</option>
+              <option value="B'nai Mitzvah">B'nai Mitzvah</option>
+            </select>
+          </label>
+          <label class="celebration-detail" hidden>If you would like to name the celebration
+            <input type="text" name="celebrationType" maxlength="120" placeholder="For example, an anniversary or rehearsal dinner">
           </label>
         </fieldset>
 
@@ -96,45 +101,65 @@
             <label class="choice"><input type="radio" name="venueStatus" value="need"> I need help finding a venue</label>
           </div>
           <label>Venue or city
-            <input type="text" name="venue" maxlength="200" placeholder="Venue name or city in Maryland">
+            <input type="text" name="venue" maxlength="200" placeholder="Venue name, or a city in the Baltimore and Washington, DC area">
+          </label>
+          <label class="check outside">
+            <input type="checkbox" name="outsideArea" value="yes"> The venue is outside the Baltimore and Washington, DC area
           </label>
         </fieldset>
 
-        <fieldset class="block">
-          <legend>How much planning help do you want?</legend>
-          <p class="hint">These are the three package levels described on the SLD Events services page.</p>
-          <div class="plans">
-            <label class="plan">
-              <input type="radio" name="planningLevel" value="day-of" required>
-              <span class="plan-name">Day-of coordination</span>
-              <span class="plan-copy">The vendors are booked. Stacey confirms the timing, the run of show, and runs the celebration.</span>
-            </label>
-            <label class="plan">
-              <input type="radio" name="planningLevel" value="partial">
-              <span class="plan-name">Partial planning</span>
-              <span class="plan-copy">You have a date and, often, a venue. Stacey helps with design, remaining vendors, and the final stretch.</span>
-            </label>
-            <label class="plan">
-              <input type="radio" name="planningLevel" value="full">
-              <span class="plan-name">Full planning</span>
-              <span class="plan-copy">From the first conversation through the last toast: timeline, design, vendors, and day-of coordination.</span>
-            </label>
-          </div>
-        </fieldset>
+        <fieldset class="block" id="tiers">
+          <legend>How would you like to work together?</legend>
+          <p class="hint">These starting prices are from the SLD Events pricing sheet. Final pricing depends on guest count, venue, and the scope of the celebration, and is confirmed in a written quote after a free consultation.</p>
 
-        <fieldset class="block">
-          <legend>Add-on coordination</legend>
-          <p class="hint">These are optional planning and design-direction fees, not the cost of flowers, rentals, or catering themselves. Check what you would like Stacey to help coordinate.</p>
-          <div class="addons" id="addons">
-            <label class="check"><input type="checkbox" name="addons" value="decor"> Theme and décor direction</label>
-            <label class="check"><input type="checkbox" name="addons" value="florals"> Florals coordination</label>
-            <label class="check"><input type="checkbox" name="addons" value="rentals"> Rentals coordination</label>
-            <label class="check"><input type="checkbox" name="addons" value="catering"> Catering coordination</label>
-            <label class="check"><input type="checkbox" name="addons" value="paper"> Invitations and paper direction</label>
-            <label class="check"><input type="checkbox" name="addons" value="lighting"> Lighting and layout direction</label>
-            <label class="check" data-for="mitzvah"><input type="checkbox" name="addons" value="teen-program"> Kids and teen program coordination</label>
-            <label class="check" data-for="corporate"><input type="checkbox" name="addons" value="av"> Audiovisual and registration coordination</label>
+          <div class="helper" id="tierHelper">
+            <p class="helper-title">Not sure which tier fits?</p>
+            <p>If you have already planned the event and booked your vendors, Day-of Coordination covers execution on the day itself. If you want everything handled from budget and venue to design and the day itself, choose Full-Service Planning. Tell us where you are in the process and we will recommend the right fit.</p>
+            <p class="field-label">A quick way to choose</p>
+            <div class="choices tight">
+              <button type="button" class="choice quiz" data-tier="day-of">I have already planned the event and booked my vendors</button>
+              <button type="button" class="choice quiz" data-tier="full">I want everything handled, from budget and venue to the day itself</button>
+            </div>
+            <p class="quiz-result" id="quizResult" hidden></p>
           </div>
+
+          <div class="plans" role="radiogroup" aria-label="Planning package">
+            <label class="plan tier">
+              <input type="radio" name="planningLevel" value="day-of" required>
+              <span class="plan-top">
+                <span class="plan-name">Day-of Coordination</span>
+                <span class="plan-price">Starting at $1,200</span>
+              </span>
+              <span class="plan-kicker">Execution only, you do the planning</span>
+              <span class="plan-copy">You planned everything yourselves. We run the day itself so you can be present with your family.</span>
+              <ul class="plan-includes">
+                <li>Rehearsal attendance</li>
+                <li>Setup supervision on the day</li>
+                <li>Vendor wrangling and day-of point of contact</li>
+                <li>Timeline execution on the day itself</li>
+                <li>Your family does all the planning in advance</li>
+              </ul>
+            </label>
+            <label class="plan tier">
+              <input type="radio" name="planningLevel" value="full">
+              <span class="plan-top">
+                <span class="plan-name">Full-Service Planning</span>
+                <span class="plan-price">Starting at $4,200</span>
+              </span>
+              <span class="plan-kicker">Everything handled, start to finish</span>
+              <span class="plan-copy">From the first idea to the last dance. We build the budget, find the venue and vendors, design the room, and run the day.</span>
+              <ul class="plan-includes">
+                <li>Venue search and selection support</li>
+                <li>Full budget creation and management</li>
+                <li>Vendor recommendations, sourcing, meetings, and contract review support</li>
+                <li>Complete event design and styling: theme, colors, and decor plan</li>
+                <li>Planning timeline and regular check-ins from booking to the day</li>
+                <li>Vendor confirmation, detailed day-of timeline, and full management on the day</li>
+                <li>Guest, RSVP, and seating support, plus hotel and transport guidance</li>
+              </ul>
+            </label>
+          </div>
+          <p class="venue-note" id="venueNote" hidden>Venue search and selection support is already included in Full-Service Planning. If you still need a venue, that is the better fit than Day-of Coordination.</p>
         </fieldset>
 
         <fieldset class="block">
@@ -149,11 +174,18 @@
               <option value="$50,000+">$50,000+</option>
             </select>
           </label>
-          <p class="hint">This is the budget for the whole day, not just planning. The estimate on the right is for planning fees only.</p>
+          <p class="hint">This is the budget for the whole day, not just planning. Venue, catering, and other vendor costs are paid by you directly and are not included in the planning fee.</p>
           <label>What should the day feel like?
-            <textarea name="notes" maxlength="5000" rows="5" placeholder="Anything Stacey should know: the people, the tone, vendors already booked, or questions you have."></textarea>
+            <textarea name="notes" maxlength="5000" rows="5" placeholder="Anything Stacey should know: the people, the tone, vendors already booked, or where you are in the process."></textarea>
           </label>
         </fieldset>
+
+        <section class="terms">
+          <h3>How booking works</h3>
+          <p>Start with a free consultation so we can hear about your date, venue, guest count, and what you have planned so far. You will get a written quote for your event before you sign anything. No surprises, no pressure.</p>
+          <h3>Payment terms</h3>
+          <p>A 50% deposit reserves your date at booking. The balance is due before the event. Vendor and venue costs are paid by you directly to each vendor and are not included in the planning fees.</p>
+        </section>
 
         <p class="form-error" id="formError" hidden role="alert"></p>
 
@@ -167,17 +199,18 @@
       <aside class="estimate" id="estimate" aria-live="polite">
         <div class="estimate-card">
           <p class="eyebrow">Live estimate</p>
-          <h2>Planning fee range</h2>
-          <p class="estimate-total" id="estimateTotal">Choose a planning level</p>
+          <h2>Planning fee</h2>
+          <p class="estimate-kicker" id="estimateKicker">Choose a planning package</p>
+          <p class="estimate-total" id="estimateTotal"></p>
           <ul class="estimate-lines" id="estimateLines"></ul>
-          <p class="disclaimer" id="estimateNote">This is an estimate, not a contract. Package prices are not listed on eventsbystacey.com yet, so the numbers use sample planning-fee ranges for discussion only. They are not published SLD Events rates. Final pricing is confirmed by Stacey after you talk. Venue, catering, florals, rentals, and other vendor costs are separate.</p>
+          <p class="disclaimer" id="estimateNote">Choose a package to see the starting price. Final pricing depends on guest count, venue, and the scope of the celebration, and is confirmed in a written quote after a free consultation. Vendor and venue costs are not included.</p>
         </div>
       </aside>
     </section>
   </main>
 
   <div class="mobile-bar" id="mobileBar" hidden>
-    <p>Estimated planning fee <strong id="mobileTotal">pending</strong></p>
+    <p>Planning fee <strong id="mobileTotal">pending</strong></p>
     <a href="#estimate">View details</a>
   </div>
 
@@ -187,8 +220,8 @@
         <a class="footer-logo-link" href="https://eventsbystacey.com/">
           <img class="footer-logo" src="assets/brand/logo-gold.svg" width="189" height="202" alt="SLD Events">
         </a>
-        <p>Baltimore · Maryland</p>
-        <p>Serving the Mid-Atlantic Region</p>
+        <p>Baltimore and Washington, DC area</p>
+        <p>eventsbystacey.com</p>
       </div>
       <div>
         <h2 class="footer-heading">Contact</h2>

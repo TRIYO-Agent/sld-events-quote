@@ -458,3 +458,101 @@ textarea:focus-visible,
   .intake fieldset { break-inside: avoid; }
   a { color: inherit; }
 }
+
+
+.plan.tier {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1.1rem 1.15rem 1.2rem;
+  position: relative;
+}
+.plan.tier input[type="radio"] {
+  position: absolute;
+  top: 1.2rem;
+  left: 1.15rem;
+  margin: 0;
+}
+.plan-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.4rem 1rem;
+  padding-left: 1.8rem;
+}
+.plan-name { font-family: var(--serif); font-size: 1.45rem; letter-spacing: -0.015em; }
+.plan-price {
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.plan-kicker {
+  padding-left: 1.8rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.plan-copy { padding-left: 1.8rem; color: var(--ink-soft); }
+.plan-includes {
+  margin: 0.45rem 0 0;
+  padding: 0 0 0 3.1rem;
+  color: var(--ink);
+}
+.plan-includes li { margin: 0.2rem 0; }
+
+.helper {
+  background: var(--sand);
+  border: 1px solid var(--line);
+  padding: 1rem 1.1rem 1.1rem;
+  margin: 0 0 1.1rem;
+}
+.helper-title {
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  margin: 0 0 0.4rem;
+}
+.helper p { margin: 0 0 0.7rem; }
+.helper .field-label { margin-top: 0.4rem; }
+button.quiz {
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  background: #fff;
+  cursor: pointer;
+  color: var(--ink);
+}
+button.quiz:hover, button.quiz.is-picked {
+  border-color: var(--ink);
+  background: #fff;
+  box-shadow: inset 3px 0 0 var(--gold);
+}
+.quiz-result { color: var(--ink); font-weight: 400; margin: 0.6rem 0 0 !important; }
+
+.terms {
+  border-top: 1px solid var(--line);
+  padding: 1.2rem 0 0.4rem;
+  margin-bottom: 1.2rem;
+}
+.terms h3 {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 400;
+  margin: 0.8rem 0 0.35rem;
+}
+.terms p { margin: 0 0 0.8rem; color: var(--ink-soft); }
+.venue-note { color: var(--ink); background: var(--sand); border-left: 3px solid var(--gold); padding: 0.7rem 0.9rem; }
+.check.outside { margin-top: 0.2rem; width: 100%; }
+.estimate-kicker { margin: 0 0 0.35rem; color: var(--ink-soft); }
+
+@media print {
+  .helper, .site-header, .site-nav, .hero .lede, .actions, .mobile-bar, .site-footer, .skip, .form-error, .quiz, .quiz-result {
+    display: none !important;
+  }
+  .terms, .estimate-card, .plan.tier { break-inside: avoid; }
+  .hero { padding: 0 0 1rem; }
+}
